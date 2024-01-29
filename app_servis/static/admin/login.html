@@ -45,7 +45,8 @@
                 if (data.msg) {
                     alert(data.msg);
                 } else {
-                    document.cookie = `token=${data.token};SameSite=Lax`;
+                    console.log(data.token);
+                    document.cookie = `token=${data.token};SameSite=Lax;domain=localhost`;
                     window.location.href = 'index.html';
                 }
             });

@@ -4,9 +4,22 @@ const route = express.Router();
 const Joi = require('joi');
 const fs = require('fs');
 const BP = require('body-parser');
+const jwt = require('jsonwebtoken');
+
+function authToken(req, res, next) {
+	const authHeader = req.headers['authorization'];
+	const token = authHeader && authHeader.split(' ')[1];
+	if (token == null) return res.status(401).json({ msg: "Error: null token" });
+	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+	   if (err) return res.status(403).json({ msg: err });
+	   req.user = user;
+	   next();
+	});
+  } 
 
 route.use(express.json());
 route.use(express.urlencoded({extended:true}));
+route.use(authToken);
 
 route.get("/", async (req, res) => {
     try{
