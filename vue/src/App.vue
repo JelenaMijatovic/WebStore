@@ -4,11 +4,40 @@
     <nav>
       <router-link to="/">Home</router-link> |
       <router-link to="/narudzbine">Narudžbine</router-link> |
-      <router-link to="/prijavi-promenu">Prijavi promenu podataka</router-link>
+      <router-link to="/prijavi-promenu">Prijavi promenu podataka</router-link> |
+      <router-link v-if="!token" to="/register">Register</router-link> |
+      <router-link v-if="!token" to="/login">Log In</router-link>
+      <b-nav-item v-else @click="logout()">Log Out</b-nav-item>
     </nav>
     <router-view/>
   </div>
 </template>
+
+<script>
+import { mapState, mapMutations } from 'vuex';
+
+export default {
+  computed: {
+      ...mapState([
+        'token'
+      ])
+  },
+  methods: {
+      ...mapMutations([
+        'removeToken',
+        'setToken'
+      ]),
+      logout() {
+        this.removeToken();
+      }
+    },
+  mounted() {
+    if (localStorage.token) {
+      this.setToken(localStorage.token);
+    }
+  }
+}
+</script>
 
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');

@@ -7,7 +7,8 @@ export default new Vuex.Store({
   state: {
     narudzbine: [],
     oprema: [],
-    svaOpremaIDs: []
+    svaOpremaIDs: [],
+    token: []
   },
   getters: {
   },
@@ -20,11 +21,19 @@ export default new Vuex.Store({
     },
     addSvaOpremaIDs(state, niz){
       state.svaOpremaIDs = niz;
+    },
+    setToken(state, token) {
+      state.token = token;
+      localStorage.token = token;
+    },
+    removeToken(state) {
+      state.token = '';
+      localStorage.token = '';
     }
   },
   actions: {
-    async fetchNarudzbine({commit}) {
-      fetch(`http://localhost:9000/narudzbina/`)
+    async fetchNarudzbine({commit, state}) {
+      fetch(`http://localhost:9000/narudzbina/`, {headers:{'Authorization': `Bearer ${state.token}`}})
       .then( res=>res.json() )
       .then( data => commit('addNarudzbine', data) );
     },
@@ -34,7 +43,7 @@ export default new Vuex.Store({
           resolve(state.oprema[opremaID]);
         }
         else{
-          fetch(`http://localhost:9000/oprema/${opremaID}`)
+          fetch(`http://localhost:9000/oprema/${opremaID}`, {headers:{'Authorization': `Bearer ${state.token}`}})
             .then( res=>res.json() )
             .then( data=> {
             commit('addOprema', data)
@@ -43,10 +52,32 @@ export default new Vuex.Store({
         }
       });
     },
-    async fetchSvaOprema({commit}){
-      fetch("http://localhost:8000/admin/oprema/")
+    async fetchSvaOprema({commit, state}){
+      fetch("http://localhost:9000/oprema/", {headers:{'Authorization': `Bearer ${state.token}`}})
       .then( res=>res.json() )
       .then( data=> commit('addSvaOpremaIDs', data) );
+      },
+      register({ commit }, obj) {
+        fetch('http://127.0.0.1:9001/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(obj)
+        }).then( res => res.json() )
+          .then( data => commit('setToken', data.token) );
+      },
+      login({ commit }, obj) {
+        fetch('http://127.0.0.1:9001/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(obj)
+      }).then( res => res.json() )
+        .then( data => {
+          if (data.msg) {
+            alert(data.msg);
+          } else {
+            commit('setToken', data.token)
+          }
+        });
       }
 } ,
   modules: {
