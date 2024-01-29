@@ -1,0 +1,9 @@
+{"naziv":"test oprema","opis":"Ovo je test oprema","kategorija":"Slušalice","cena":"4200"}
+{"naziv":"test oprema","opis":"sfsfd","kategorija_id":"Slušalice","cena":"3200"}
+{"naziv":"test oprema","opis":"sfsfd","kategorija_id":"Slušalice","cena":"3200"}
+{"naziv":"test oprema","opis":"sfsfd","kategorija_id":"Slušalice","cena":"3200"}
+{"naziv":"test oprema","opis":"sfsfd","kategorija_id":"Slušalice","cena":"3200"}
+{"naziv":"test oprema","opis":"sfsfd","kategorija_id":"Slušalice","cena":"3200"}
+{"naziv":"test oprema","opis":"sfsfd","kategorija_id":"Slušalice","cena":"3200"}
+{"naziv":"test oprema","opis":"sfsfd","kategorija_id":"Slušalice","cena":"3200"}
+{"naziv":"test oprema","opis":"sfsfd","kategorija_id":"Slušalice","cena":"3200"}
