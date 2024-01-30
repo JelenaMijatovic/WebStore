@@ -4,6 +4,7 @@ import HomeView from '../views/HomeView.vue'
 import OpremaView from '../views/OpremaView.vue'
 import NarudzbineView from '../views/NarudzbineView.vue'
 import PrijavaView from '../views/PrijavaView.vue'
+import ProfileView from '../views/ProfileView.vue'
 import RegisterView from '../views/RegisterView.vue'
 import LoginView from '../views/LoginView.vue'
 
@@ -29,6 +30,11 @@ const routes = [
     path: '/prijavi-promenu',
     name: 'PrijavaView',
     component: PrijavaView
+  },
+  {
+    path: '/profile',
+    name: 'ProfileView',
+    component: ProfileView
   },
   {
     path: '/register',

@@ -26,9 +26,6 @@ module.exports = (sequelize, DataTypes) => {
     oprema_id: {
       type: DataTypes.INTEGER,
       allowNull: false
-    },
-    jedinicna_cena: {
-      type: DataTypes.INTEGER
     }
   }, {
     sequelize,

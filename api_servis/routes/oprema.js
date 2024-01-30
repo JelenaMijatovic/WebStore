@@ -57,6 +57,17 @@ route.get("/", async (req, res) => {
  
  route.post("/", async (req, res) => {
     try{
+      const shema = Joi.object().keys({
+            naziv: Joi.string().trim().min(5).max(25).required(),
+            opis: Joi.string().trim().min(1).required(),
+            kategorija_id: Joi.string().trim().min(1).required(),
+            cena: Joi.number().greater(0).required()
+      });
+      const {error, succ} = shema.validate(req.body);
+      if(error){
+            res.send("Greska: " + error.details[0].message);
+            return;
+      }
           const novi = await Oprema.create(req.body);
           novi.save();
           return res.json(novi);
@@ -107,6 +118,14 @@ route.get("/", async (req, res) => {
 
  route.put("/promeni-cenu/:id", async (req,res)=>{
 	try{
+            const shema = Joi.object().keys({
+                  cena: Joi.number().greater(0).required()
+            });
+            const {error, succ} = shema.validate(req.body);
+            if(error){
+                  res.send("Greska: " + error.details[0].message);
+                  return;
+            }
             const oprema = await Oprema.findByPk(req.params.id);
             oprema.cena = req.body.cena;
             oprema.save();

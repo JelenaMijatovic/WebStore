@@ -12,9 +12,6 @@ module.exports = {
       komada: {
         type: Sequelize.INTEGER
       },
-      jedinicna_cena: {
-        type: Sequelize.INTEGER
-      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

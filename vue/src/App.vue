@@ -4,10 +4,13 @@
     <nav>
       <router-link to="/">Home</router-link> |
       <router-link to="/narudzbine">Narudžbine</router-link> |
-      <router-link to="/prijavi-promenu">Prijavi promenu podataka</router-link> |
+      <router-link to="/prijavi-promenu">Naruci</router-link> |
       <router-link v-if="!token" to="/register">Register</router-link> |
       <router-link v-if="!token" to="/login">Log In</router-link>
-      <b-nav-item v-else @click="logout()">Log Out</b-nav-item>
+      <div v-else>
+      <router-link to="/profile">Profil</router-link> |
+      <b-nav-item  @click="logout()">Log Out</b-nav-item>
+      </div>
     </nav>
     <router-view/>
   </div>

@@ -8,6 +8,10 @@
   <link rel="stylesheet" type="text/css" href="bootstrap.css">
   <link rel="stylesheet" href="main.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>  
+    const cookies = document.cookie.split('=');
+    const token = cookies[cookies.length - 1];
+  </script>
 </head>
 <body>
 
@@ -37,37 +41,83 @@
         <tr>
           <th>Datum narudžbine</th>
           <th>Status</th>
-          <th>Cena</th>
           <th>Adresa</th>
-          <th>Sadržaj narudžbine</th>
           <th>Akcija</th>
         </tr>
       </thead>
-      <tbody>
-        <tr>
-          <td>5.10.2023 18:30</td>
-          <td>Nova</td>
-          <td>1699</td>
-          <td>Kralja Milana 12/2</td>
-          <td>1</td>
-          <td>
-            <a href="narudzbina.html?id=1" class="btn btn-primary" id="button">Detalji</a>
-          </td>
-        </tr>
-        <tr>
-          <td>6.10.2023 12:00</td>
-          <td>Prihvaćena</td>
-          <td>188</td>
-          <td>Knez Mihailova 6/6</td>
-          <td>2</td>
-          <td>
-            <a href="narudzbina.html?id=1" class="btn btn-primary" id="button">Detalji</a>
-          </td>
-        </tr>
+      <tbody id="spisak">
+
       </tbody>
     </table>
   </div>
 </main>
 
 </body>
+
+<script>
+ window.addEventListener("load", function() {
+    fetch("http://localhost:9000/narudzbina/", {        
+      headers: {
+          'Authorization': `Bearer ${token}`
+      }
+  }).then(response => {
+      response.json().then(function(data) {
+        console.log(data);
+        for (let i = 0; i < data.length; i++){
+          dataRow = data[i];
+          let tr = document.createElement("tr");
+          let td1 = document.createElement("td");
+          let td2 = document.createElement("td");
+          let td3 = document.createElement("td");
+          let td4 = document.createElement("td");
+          td1.innerHTML = dataRow.vreme_narucivanja;
+          td2.innerHTML = dataRow.status;
+          td3.innerHTML = dataRow.adresa;
+
+          let btnI = document.createElement("a");
+          var textI = document.createTextNode("Detalji");
+          btnI.appendChild(textI);
+          btnI.id = "button";
+          btnI.classList.add("btn");
+          btnI.classList.add("btn-primary");
+          btnI.href = `narudzbina.html?id=${data[i].id}`;
+          td4.appendChild(btnI);
+          td4.appendChild(document.createTextNode("\u00A0"));
+
+          let btnD = document.createElement("button");
+          var textD = document.createTextNode("Obriši");
+          btnD.appendChild(textD);
+          btnD.classList.add("btn");
+          btnD.classList.add("btn-primary");
+          td4.appendChild(btnD);
+
+          btnD.addEventListener("click", function(){
+            if( confirm("Potvrdi brisanje") ){
+              fetch("http://localhost:9000/narudzbina/"+data[i].id, { method:"DELETE", headers:{'Authorization': `Bearer ${token}`} 
+              })
+              .then( resp=>resp.json()).then(data=>{
+              alert("Obrisan je zapis "+data);
+                window.location.href=`/admin/narudzbine.html`;
+              })
+              .catch( err=>console.log(err));
+            } else {
+              return;
+            }
+          });
+
+          tr.appendChild(td1);
+          tr.appendChild(td2);
+          tr.appendChild(td3);
+          tr.appendChild(td4);
+          tr.dataset.id = dataRow.id;
+          document.getElementById("spisak").appendChild(tr);
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+    });
+      }); 
+
+  });
+</script>
 </html> 

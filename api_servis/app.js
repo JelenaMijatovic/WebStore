@@ -28,7 +28,7 @@ const tagRoutes = require("./routes/tag.js");
 app.use("/tag", tagRoutes);
 
 app.listen({ port:9000 }, async () => {
-	console.log("Started server on localhost:8000");
+	console.log("Started server on localhost:9000");
 	await sequelize.sync();
 	console.log("DB synced");
 });
