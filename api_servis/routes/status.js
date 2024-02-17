@@ -1,5 +1,5 @@
 const express = require("express");
-const { sequelize, Oprema, Kategorija} = require("../models");
+const { sequelize, Narudzbina, Status} = require("../models");
 const route = express.Router();
 const Joi = require('joi');
 const jwt = require('jsonwebtoken');
@@ -21,7 +21,7 @@ route.use(authToken);
 
 route.get("/", async (req, res) => {
     try{
-     const kategorije = await Kategorija.findAll();
+     const kategorije = await Status.findAll();
         return res.json(kategorije);
     }catch(err){
          console.log(err);
@@ -31,8 +31,8 @@ route.get("/", async (req, res) => {
 
  route.get("/:id", async (req, res) => {
     try{
-        const kategorija = await Kategorija.findByPk(req.params.id);
-        return res.json(kategorija);  
+        const status = await Status.findByPk(req.params.id);
+        return res.json(status);  
     }catch(err){
          console.log(err);
          res.status(500).json({ error: "Greska", data: err });
@@ -50,9 +50,9 @@ route.get("/", async (req, res) => {
                     res.send("Greska: " + error.details[0].message);
                     return;
           }
-          const kategorija = await Kategorija.create(req.body);
-          kategorija.save();
-          return res.json(kategorija);
+          const status = await Status.create(req.body);
+          status.save();
+          return res.json(status);
     }catch(err){
          console.log(err);
          res.status(500).json({ error: "Greska", data: err });
@@ -62,10 +62,10 @@ route.get("/", async (req, res) => {
  
  route.put("/:id", async (req, res) => {
     try{
-          const kategorija = await Kategorija.findByPk(req.params.id);
-          kategorija.naziv = req.body.naziv;
-          kategorija.save();
-          return res.json(kategorija);
+          const status = await Status.findByPk(req.params.id);
+          status.naziv = req.body.naziv;
+          status.save();
+          return res.json(status);
     }catch(err){
          console.log(err);
          res.status(500).json({ error: "Greska", data: err });
@@ -75,18 +75,18 @@ route.get("/", async (req, res) => {
  
  route.delete("/:id", async (req, res) => {
     try{
-          const kategorija = await Kategorija.findByPk(req.params.id);
-          const oprema = await Oprema.findAll({
+          const status = await Status.findByPk(req.params.id);
+          const narudzbina = await Narudzbina.findAll({
                where: {
-                    kategorija_id: kategorija.id
+                    status_id: status.id
                }
           });
-          console.log(oprema.length);
-          if (oprema.length == 0) {
-               kategorija.destroy();
-               return res.json( kategorija.id );
+          console.log(narudzbina);
+          if (Array.isArray(narudzbina)) {
+               status.destroy();
+               return res.json( status.id );
           } else {
-               res.status(500).json({ error: "Kategorija je vezana za postojecu opremu"});
+               res.status(500).json({ error: "Status je vezan za postojecu narudzbinu", data: err });
           }
     }catch(err){
          console.log(err);

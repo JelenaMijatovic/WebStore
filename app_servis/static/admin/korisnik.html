@@ -29,7 +29,7 @@
         <a class="nav-link" href="narudzbine.html">Narudžbine</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link active" href="tagovi.html">Tagovi</a>
+        <a class="nav-link" href="tagovi.html">Tagovi</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="kategorije.html">Kategorije</a>
@@ -38,7 +38,7 @@
         <a class="nav-link" href="statusi.html">Statusi</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="korisnici.html">Korisnici</a>
+        <a class="nav-link active" href="korisnici.html">Korisnici</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" id="logout">Log out</a>
@@ -49,15 +49,32 @@
 </div>
 
 <main class="container">
-  <h1>Tag</h1>
+  <h1>Korisnik</h1>
   <form method="post" id="forma">
     <div class="mb-3 mt-3">
-      <label for="naziv">Naziv:</label>
-      <input type="text" class="form-control" id="naziv" placeholder="Naziv" name="naziv" required>
+      <label for="username">Username:</label>
+      <input type="text" class="form-control" id="username" placeholder="Username" name="username" required>
     </div> 
+    <div class="mb-3 mt-3">
+        <label for="password">Password:</label>
+        <input type="text" class="form-control" id="password" placeholder="Password" name="password" required>
+      </div> 
+      <div class="mb-3 mt-3">
+        <label for="email">Email:</label>
+        <input type="text" class="form-control" id="email" placeholder="Email" name="email" required>
+      </div> 
+      <div class="col-6 mb-3 mt-3">
+        <input type="checkbox" id="admin" name="admin" value="Admin">
+        <label for="admin">Admin</label><br>
+      </div> 
+      <div class="col-sm-9">
+        <ul id="narudzbine">
+        
+        </ul> 
+      </div>
     <div class="mb-5 mt-3">
       <button type="submit" class="btn btn-primary">Sačuvaj</button>
-      <a href="tagovi.html" class="btn btn-link">Nazad</a>
+      <a href="korisnici.html" class="btn btn-link">Nazad</a>
     </div>
   </form> 
 </main>
@@ -70,9 +87,17 @@
       var url = new URL( window.location.href );
       id = url.searchParams.get("id"); 
 
-      fetch("http://localhost:9000/tag/" + id, {headers:{ 'Authorization': `Bearer ${token}`}}).then( resp=>resp.json() )
+      fetch("http://localhost:9000/user/" + id, {headers:{ 'Authorization': `Bearer ${token}`}}).then( resp=>resp.json() )
     .then( data=>{
-        document.getElementById("naziv").value = data.naziv; 
+        document.getElementById("username").value = data.email; 
+        document.getElementById("password").value = data.email; 
+        document.getElementById("email").value = data.email; 
+        document.getElementById("admin").value = data.admin; 
+        for(let i=0; i<data.narudzbine.length; i++){
+          let li = document.createElement("li");
+          li.innerHTML = data.narudzbine[i].id;
+          document.getElementById("narudzbine").appendChild(li);
+        }
         console.log(data);
     })
     .catch(err=>console.log(err));
@@ -80,27 +105,30 @@
   document.getElementById("forma").addEventListener("submit", function(event){
         event.preventDefault();
 
-        if (document.getElementById("naziv").value.length < 1) {
-          document.getElementById("naziv").classList.add("error");
-          document.getElementById("naziv").classList.remove("success");
+        if (document.getElementById("username").value.length < 1) {
+          document.getElementById("username").classList.add("error");
+          document.getElementById("username").classList.remove("success");
           event.preventDefault();
         } else {
-          document.getElementById("naziv").classList.remove("error");
-          document.getElementById("naziv").classList.add("success");
+          document.getElementById("username").classList.remove("error");
+          document.getElementById("username").classList.add("success");
         }
 
-        var noviTag = {};
-        noviTag.naziv = document.getElementById("naziv").value; 
-        console.log(noviTag);
+        var noviUser = {};
+        noviUser.username = document.getElementById("username").value; 
+        noviUser.password = document.getElementById("password").value; 
+        noviUser.email = document.getElementById("email").value; 
+        noviUser.admin = document.getElementById("admin").value; 
+        console.log(noviUser);
 
-        fetch("http://localhost:9000/tag/" +id, {
+        fetch("http://localhost:9000/user/" +id, {
             method:"PUT",
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify(noviTag)
+            body: JSON.stringify(noviUser)
         })
         .then(succ=>succ.json())
         .then(data=>{
-        window.location.href=`/admin/tagovi.html`;
+        window.location.href=`/admin/korisnici.html`;
         })
         .catch(err => console.log(err));	
 

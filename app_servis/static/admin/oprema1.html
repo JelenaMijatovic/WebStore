@@ -29,6 +29,21 @@
       <li class="nav-item">
         <a class="nav-link" href="narudzbine.html">Narudžbine</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="tagovi.html">Tagovi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="kategorije.html">Kategorije</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="statusi.html">Statusi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="korisnici.html">Korisnici</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="logout">Log out</a>
+      </li>
     </ul>
   </div>
 </nav>
@@ -49,8 +64,7 @@
     <div class="col-6 mb-3 mt-3">
       <label for="kategorija">Kategorija:</label>
       <select class="form-select" name="kategorija" id="kategorija">
-        <option value="1">Slušalice</option>
-        <option value="2">IEM</option>
+
       </select>
     </div>  
     <div class="col-6 mb-3 mt-3">
@@ -62,10 +76,7 @@
       <label for="naziv">Tagovi:</label>
       <div class="input-group mb-3">
           <select class="form-select" id="spisak-tagova">
-              <option></option>
-              <option value="1">Open Back</option>
-              <option value="2">Closed Back</option>
-              <option value="3">Odvojivi kabl</option>
+
           </select>    
           <button class="btn btn-success" type="button" id="dodaj-tag">+</button>
     </div>
@@ -75,7 +86,6 @@
     <input type="hidden" name="tagovi" id="tagovi-input">
     <div class="mb-5 mt-3">
       <button type="submit" class="btn btn-primary">Sačuvaj</button>
-      <a href="#" class="btn btn-danger" id="button">Obriši</a>
       <a href="oprema.html" class="btn btn-link">Nazad</a>
     </div>
   </form> 

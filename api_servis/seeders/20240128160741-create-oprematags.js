@@ -5,9 +5,9 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     await queryInterface.bulkInsert('oprematags',
     [
-        {oprema_id:1, tag_id:1},
-        {oprema_id:2, tag_id:1},
-        {oprema_id:2, tag_id:2}
+        {OpremaId:1, TagId:1},
+        {OpremaId:2, TagId:1},
+        {OpremaId:2, TagId:2}
     ]);
   },
 

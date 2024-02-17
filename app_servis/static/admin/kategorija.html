@@ -8,7 +8,10 @@
   <link rel="stylesheet" type="text/css" href="bootstrap.css">
   <link rel="stylesheet" href="main.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="oprema.js"></script>
+  <script>  
+    const cookies = document.cookie.split('=');
+    const token = cookies[cookies.length - 1];
+  </script>
 </head>
 <body>
 
@@ -25,6 +28,21 @@
       <li class="nav-item">
         <a class="nav-link" href="narudzbine.html">Narudžbine</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="tagovi.html">Tagovi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="kategorije.html">Kategorije</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="statusi.html">Statusi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="korisnici.html">Korisnici</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="logout">Log out</a>
+      </li>
     </ul>
   </div>
 </nav>
@@ -32,18 +50,61 @@
 
 <main class="container">
   <h1>Kategorija</h1>
-  <form method="post" action="http://postman-echo.com/post" id="forma">
+  <form method="post" id="forma">
     <div class="mb-3 mt-3">
       <label for="naziv">Naziv:</label>
       <input type="text" class="form-control" id="naziv" placeholder="Naziv" name="naziv" required>
     </div> 
     <div class="mb-5 mt-3">
       <button type="submit" class="btn btn-primary">Sačuvaj</button>
-      <a href="#" class="btn btn-danger" id="red">Obriši</a>
       <a href="kategorije.html" class="btn btn-link">Nazad</a>
     </div>
   </form> 
 </main>
 
 </body>
+<script>
+  var id = null;
+  window.addEventListener("load", function(){
+
+      var url = new URL( window.location.href );
+      id = url.searchParams.get("id"); 
+
+      fetch("http://localhost:9000/kategorija/" + id, {headers:{ 'Authorization': `Bearer ${token}`}}).then( resp=>resp.json() )
+    .then( data=>{
+        document.getElementById("naziv").value = data.naziv; 
+        console.log(data);
+    })
+    .catch(err=>console.log(err));
+  });
+  document.getElementById("forma").addEventListener("submit", function(event){
+        event.preventDefault();
+
+        if (document.getElementById("naziv").value.length < 1) {
+          document.getElementById("naziv").classList.add("error");
+          document.getElementById("naziv").classList.remove("success");
+          event.preventDefault();
+        } else {
+          document.getElementById("naziv").classList.remove("error");
+          document.getElementById("naziv").classList.add("success");
+        }
+
+        var novaKategorija = {};
+        novaKategorija.naziv = document.getElementById("naziv").value; 
+        console.log(novaKategorija);
+
+        fetch("http://localhost:9000/kategorija/" +id, {
+            method:"PUT",
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify(novaKategorija)
+        })
+        .then(succ=>succ.json())
+        .then(data=>{
+        window.location.href=`/admin/kategorije.html`;
+        })
+        .catch(err => console.log(err));	
+
+        return true;
+    });
+</script>
 </html> 

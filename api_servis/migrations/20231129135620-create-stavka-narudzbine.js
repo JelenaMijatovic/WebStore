@@ -20,7 +20,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      narudzbina_id: {
+      NarudzbinaId: {
         allowNull: false,
         references: {
           model: 'narudzbinas',
@@ -28,7 +28,7 @@ module.exports = {
         },
         type: Sequelize.INTEGER
       },
-      oprema_id: {
+      OpremaId: {
         allowNull: false,
         references: {
           model: 'opremas',

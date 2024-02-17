@@ -11,8 +11,8 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate({Kategorija, Tag, Narudzbina}) {
       this.belongsTo(Kategorija, {foreignKey: "kategorija_id", as: "kategorija"});
-      this.belongsToMany(Narudzbina, {foreignKey: "oprema_id", as: "narudzbine", through:"StavkaNarudzbine"});
-      this.belongsToMany(Tag, {foreignKey: "oprema_id", as: "tagovi", through:"OpremaTag"});
+      this.belongsToMany(Narudzbina, {foreignKey: "OpremaId", as: "narudzbine", through:"StavkaNarudzbine"});
+      this.belongsToMany(Tag, {foreignKey: "OpremaId", as: "tagovi", through:"OpremaTag", onDelete: 'cascade'});
     }
   }
   Oprema.init({

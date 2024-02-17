@@ -32,10 +32,10 @@
         <a class="nav-link" href="tagovi.html">Tagovi</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link active" href="kategorije.html">Kategorije</a>
+        <a class="nav-link" href="kategorije.html">Kategorije</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="statusi.html">Statusi</a>
+        <a class="nav-link active" href="statusi.html">Statusi</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="korisnici.html">Korisnici</a>
@@ -49,7 +49,7 @@
 </div>
 
 <main class="container">
-  <h1>Kategorije</h1>
+  <h1>Statusi</h1>
   <div class="container mt-3">         
     <table class="table table-dark table-striped">
       <thead>
@@ -63,13 +63,13 @@
       </tbody>
     </table>
   </div>
-  <a href="nova-kategorija.html" class="btn btn-primary float-end" id="button">Nova Kategorija</a>
+  <a href="novi-status.html" class="btn btn-primary float-end" id="button">Novi status</a>
 </main>
 
 </body>
 <script>
   window.addEventListener("load", function() {
-  fetch("http://localhost:9000/kategorija/", {        
+  fetch("http://localhost:9000/status/", {        
     headers: {
         'Authorization': `Bearer ${token}`
     }
@@ -89,7 +89,7 @@
         btnI.id = "button";
         btnI.classList.add("btn");
         btnI.classList.add("btn-primary");
-        btnI.href = `kategorija.html?id=${data[i].id}`;
+        btnI.href = `status.html?id=${data[i].id}`;
         td2.appendChild(btnI);
         td2.appendChild(document.createTextNode("\u00A0"));
 
@@ -102,15 +102,13 @@
 
         btnD.addEventListener("click", function(){
           if( confirm("Potvrdi brisanje") ){
-            fetch("http://localhost:9000/kategorija/"+data[i].id, { method:"DELETE", headers:{'Authorization': `Bearer ${token}`} 
+            fetch("http://localhost:9000/status/"+data[i].id, { method:"DELETE", headers:{'Authorization': `Bearer ${token}`} 
             })
-            .then( resp=>{resp.json();
-            if (resp.status == 500) {
-              alert("Kategorija je vezana za postojecu opremu");
-            } else {
-              alert("Obrisan je zapis "+data[i].id);
-              window.location.href=`/admin/kategorije.html`;
-            }}).catch( err=>{console.log(err)});
+            .then( resp=>resp.json()).then(data=>{
+            alert("Obrisan je zapis "+data);
+              window.location.href=`/admin/statusi.html`;
+            })
+            .catch( err=>console.log(err));
           } else {
             return;
           }

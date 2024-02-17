@@ -1,5 +1,5 @@
 const express = require("express");
-const { sequelize, Oprema, Narudzbina, StavkaNarudzbine} = require("../models");
+const { sequelize, Oprema, Narudzbina, Status, StavkaNarudzbine} = require("../models");
 const route = express.Router();
 const jwt = require('jsonwebtoken');
 
@@ -20,7 +20,13 @@ route.use(authToken);
 
 route.get("/", async (req, res) => {
     try{
-     const narudzbine = await Narudzbina.findAll();
+     const narudzbine = await Narudzbina.findAll(({
+          include:{ 
+               model: Status,
+               as: 'status',
+               required: true
+          }
+  }));
      return res.json(narudzbine);
     }catch(err){
          console.log(err);
@@ -31,7 +37,7 @@ route.get("/", async (req, res) => {
  route.get("/:id", async (req, res) => {
     try{
      const narudzbina = await Narudzbina.findByPk(req.params.id, ({
-          include:{
+          include:{ 
                 model: Oprema,
                 as: 'oprema',
                 required: false,
@@ -59,7 +65,11 @@ route.get("/", async (req, res) => {
  
  route.put("/:id", async (req, res) => {
     try{
-         return res.json("izmena podataka narudzbine čiji je id="+req.params.id+" a podaci su u req.body");
+          const narudzbina = await Narudzbina.findByPk(req.params.id);
+          narudzbina.status_id = req.body.status_id;
+          console.log(req);
+          narudzbina.save();
+          return res.json(narudzbina);
     }catch(err){
          console.log(err);
          res.status(500).json({ error: "Greska", data: err });

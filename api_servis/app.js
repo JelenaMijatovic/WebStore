@@ -27,6 +27,12 @@ app.use("/narudzbina", narudzbinaRoutes);
 const tagRoutes = require("./routes/tag.js");
 app.use("/tag", tagRoutes);
 
+const statusRoutes = require("./routes/status.js");
+app.use("/status", statusRoutes);
+
+const userRoutes = require("./routes/user.js");
+app.use("/user", userRoutes);
+
 app.listen({ port:9000 }, async () => {
 	console.log("Started server on localhost:9000");
 	await sequelize.sync();

@@ -5,16 +5,16 @@ const {
 module.exports = (sequelize, DataTypes) => {
   class OpremaTag extends Model {
     static associate({Oprema, Tag}) {
-      this.belongsTo(Oprema, {foreignKey: "oprema_id", as: "oprema"});
-      this.belongsTo(Tag, {foreignKey: "tag_id", as: "tag"});
+      this.belongsTo(Oprema, {foreignKey: "OpremaId", as: "oprema"});
+      this.belongsTo(Tag, {foreignKey: "TagId", as: "tag"});
     }
   }
   OpremaTag.init({
-    oprema_id: {
+    OpremaId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-    tag_id: {
+    TagId: {
       type: DataTypes.INTEGER,
       allowNull: false
     }

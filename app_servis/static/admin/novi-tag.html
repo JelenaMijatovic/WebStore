@@ -8,6 +8,10 @@
   <link rel="stylesheet" type="text/css" href="bootstrap.css">
   <link rel="stylesheet" href="main.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+  <script>  
+    const cookies = document.cookie.split('=');
+    const token = cookies[cookies.length - 1];
+  </script>
 </head>
 <body>
 
@@ -19,10 +23,25 @@
         <a class="nav-link" href="index.html">Dashboard</a>
       </li>
      <li class="nav-item">
-        <a class="nav-link active" href="oprema.html">Oprema</a>
+        <a class="nav-link" href="oprema.html">Oprema</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="narudzbine.html">Narudžbine</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link active" href="tagovi.html">Tagovi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="kategorije.html">Kategorije</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="statusi.html">Statusi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="korisnici.html">Korisnici</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="logout">Log out</a>
       </li>
     </ul>
   </div>
@@ -31,7 +50,7 @@
 
 <main class="container">
   <h1>Novi tag</h1>
-  <form method="post" action="http://postman-echo.com/post" onsubmit="return validacija()">
+  <form method="post" id="forma">
     <div class="mb-3 mt-3">
       <label for="naziv">Naziv:</label>
       <input type="text" class="form-control" id="naziv" placeholder="Naziv" name="naziv" onkeypress="this.classList.remove('success'); this.classList.remove('error')" required>
@@ -44,6 +63,31 @@
 </main>
 
 <script>
+document.getElementById("forma").addEventListener("submit", function(event){
+        event.preventDefault();
+        var validno = validacija();
+        if(!validno){ return; }
+    
+        var noviTag = {};
+        noviTag.naziv = document.getElementById("naziv").value; 
+    
+        fetch("http://localhost:9000/tag/", {
+            method:"POST",
+                    headers: { 'Content-Type': 'application/json',  'Authorization': `Bearer ${token}`},
+            body: JSON.stringify(noviTag)
+        })
+        .then(succ=>succ.json())
+        .then(data=>{
+        window.location.href=`tag.html?id=${data.id}`;
+        })
+        .catch(err => console.log(err));	
+    });
+
+    document.getElementById("naziv").addEventListener("keypress", function(){
+		this.classList.remove('success'); 
+        this.classList.remove('error'); 
+    });
+
   function validacija() {
     var validno = true;
 

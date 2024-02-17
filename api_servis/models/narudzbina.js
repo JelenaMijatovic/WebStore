@@ -9,8 +9,10 @@ module.exports = (sequelize, DataTypes) => {
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({Oprema}) {
-      this.belongsToMany(Oprema, {foreignKey: "narudzbina_id", as: "oprema", through:"StavkaNarudzbine"});
+    static associate({Status, Oprema, User}) {
+      this.belongsTo(Status, {foreignKey: "status_id", as: "status"});
+      this.belongsTo(User, {foreignKey: "user_id", as: "user"});
+      this.belongsToMany(Oprema, {foreignKey: "NarudzbinaId", as: "oprema", through:"StavkaNarudzbine"});
     }
   }
   Narudzbina.init({
@@ -22,8 +24,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.DATE(),
       allowNull: false
     },
-    status: {
-      type: DataTypes.STRING(120),
+    status_id: {
+      type: DataTypes.INTEGER,
       allowNull: false
     },
     adresa: {
@@ -34,8 +36,8 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.TEXT(),
       allowNull: false
     },
-    ime_prezime: {
-      type: DataTypes.TEXT(),
+    user_id: {
+      type: DataTypes.INTEGER,
       allowNull: false
     }
   }, {

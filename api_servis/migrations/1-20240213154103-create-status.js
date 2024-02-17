@@ -2,12 +2,15 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('OpremaTags', {
+    await queryInterface.createTable('Statuses', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
+      },
+      naziv: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -16,26 +19,10 @@ module.exports = {
       updatedAt: {
         allowNull: false,
         type: Sequelize.DATE
-      },
-      OpremaId: {
-        allowNull: false,
-        references: {
-          model: 'opremas',
-          key: 'id',
-        },
-        type: Sequelize.INTEGER
-      },
-      TagId: {
-        allowNull: false,
-        references: {
-          model: 'tags',
-          key: 'id',
-        },
-        type: Sequelize.INTEGER
       }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('OpremaTags');
+    await queryInterface.dropTable('Statuses');
   }
 };

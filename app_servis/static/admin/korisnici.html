@@ -1,14 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 <head><base href="http://localhost:8000/admin/">
-  <title>Tagovi</title>
+  <title>Oprema</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" type="text/css" href="bootstrap.css">
   <link rel="stylesheet" href="main.css">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  <script>
+  <script>  
+    //console.log(document.cookie);
     const cookies = document.cookie.split('=');
     const token = cookies[cookies.length - 1];
   </script>
@@ -19,42 +20,45 @@
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
   <div class="container-fluid">
     <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="nav-link" href="index.html">Dashboard</a>
-      </li>
-     <li class="nav-item">
-        <a class="nav-link" href="oprema.html">Oprema</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="narudzbine.html">Narudžbine</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link active" href="tagovi.html">Tagovi</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="kategorije.html">Kategorije</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="statusi.html">Statusi</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" href="korisnici.html">Korisnici</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="logout">Log out</a>
-      </li>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="index.html">Dashboard</a>
+        </li>
+       <li class="nav-item">
+          <a class="nav-link" href="oprema.html">Oprema</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="narudzbine.html">Narudžbine</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="tagovi.html">Tagovi</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="kategorije.html">Kategorije</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="statusi.html">Statusi</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="korisnici.html">Korisnici</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" id="logout">Log out</a>
+        </li>
     </ul>
   </div>
 </nav>
 </div>
 
 <main class="container">
-  <h1>Tagovi</h1>
+  <h1>Korisnici</h1>
   <div class="container mt-3">         
     <table class="table table-dark table-striped">
       <thead>
         <tr>
-          <th>Naziv</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Admin</th>
           <th>Akcija</th>
         </tr>
       </thead>
@@ -63,14 +67,12 @@
       </tbody>
     </table>
   </div>
-  <a href="novi-tag.html" class="btn btn-primary float-end" id="button">Novi Tag</a>
+  <a href="novi-korisnik.html" class="btn btn-primary float-end" id="button">Novi korisnik</a>
 </main>
 
-</body>
-
 <script>
-    window.addEventListener("load", function() {
-    fetch("http://localhost:9000/tag/", {        
+  window.addEventListener("load", function() {
+    fetch("http://localhost:9000/user/", {        
       headers: {
           'Authorization': `Bearer ${token}`
       }
@@ -82,7 +84,11 @@
           let tr = document.createElement("tr");
           let td1 = document.createElement("td");
           let td2 = document.createElement("td");
-          td1.innerHTML = dataRow.naziv;
+          let td3 = document.createElement("td");
+          let td4 = document.createElement("td");
+          td1.innerHTML = dataRow.username;
+          td2.innerHTML = dataRow.email;
+          td3.innerHTML = dataRow.admin;
 
           let btnI = document.createElement("a");
           var textI = document.createTextNode("Izmeni");
@@ -90,24 +96,24 @@
           btnI.id = "button";
           btnI.classList.add("btn");
           btnI.classList.add("btn-primary");
-          btnI.href = `tag.html?id=${data[i].id}`;
-          td2.appendChild(btnI);
-          td2.appendChild(document.createTextNode("\u00A0"));
+          btnI.href = `korisnik.html?id=${data[i].id}`;
+          td4.appendChild(btnI);
+          td4.appendChild(document.createTextNode("\u00A0"));
 
           let btnD = document.createElement("button");
           var textD = document.createTextNode("Obriši");
           btnD.appendChild(textD);
           btnD.classList.add("btn");
           btnD.classList.add("btn-primary");
-          td2.appendChild(btnD);
+          td4.appendChild(btnD);
 
           btnD.addEventListener("click", function(){
             if( confirm("Potvrdi brisanje") ){
-              fetch("http://localhost:9000/tag/"+data[i].id, { method:"DELETE", headers:{'Authorization': `Bearer ${token}`} 
+              fetch("http://localhost:9000/user/"+data[i].id, { method:"DELETE", headers:{'Authorization': `Bearer ${token}`} 
               })
               .then( resp=>resp.json()).then(data=>{
               alert("Obrisan je zapis "+data);
-                window.location.href=`/admin/tagovi.html`;
+                window.location.href=`/admin/korisnici.html`;
               })
               .catch( err=>console.log(err));
             } else {
@@ -117,6 +123,8 @@
 
           tr.appendChild(td1);
           tr.appendChild(td2);
+          tr.appendChild(td3);
+          tr.appendChild(td4);
           tr.dataset.id = dataRow.id;
           document.getElementById("spisak").appendChild(tr);
       }
@@ -128,4 +136,6 @@
 
   });
 </script>
+
+</body>
 </html> 

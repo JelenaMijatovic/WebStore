@@ -3,17 +3,17 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Tag extends Model {
+  class Status extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
-    static associate({Oprema}) {
-      this.belongsToMany(Oprema, {foreignKey: "TagId", as: "oprema", through:"OpremaTag", onDelete: 'cascade'});
+    static associate({Narudzbina}) {
+      this.hasMany(Narudzbina, {foreignKey: "status_id", as: "status"});
     }
   }
-  Tag.init({
+  Status.init({
     naziv: {
       type: DataTypes.STRING(120),
       unique: true,
@@ -21,7 +21,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {
     sequelize,
-    modelName: 'Tag',
+    modelName: 'Status',
   });
-  return Tag;
+  return Status;
 };

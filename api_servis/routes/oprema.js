@@ -20,6 +20,8 @@ function authToken(req, res, next) {
 route.use(express.json());
 route.use(express.urlencoded({extended:true}));
 route.use(authToken);
+Oprema.belongsToMany(Tag, { through: 'OpremaTags', sourceKey: 'id', targetKey: 'id', onDelete: 'cascade'});
+Tag.belongsToMany(Oprema, { through: 'OpremaTags', sourceKey: 'id', targetKey: 'id', onDelete: 'cascade' });
 
 route.get("/", async (req, res) => {
     try{
@@ -95,8 +97,8 @@ route.get("/", async (req, res) => {
           let tags = [];
           for (let tag in oprema.tagovi) {
             if (!req.body.tagovi.includes(oprema.tagovi[tag].dataValues.id.toString())) {
-                  console.log(oprema.tagovi[tag].dataValues.id);
-                  oprema.removeTag(Tag.findByPk(oprema.tagovi[tag].dataValues.id));
+                  oldTag = await Tag.findByPk(oprema.tagovi[tag].dataValues.id);
+                  await oprema.removeTag(oldTag);
             } else {
                   tags.push(oprema.tagovi[tag].dataValues.id);
             }
@@ -104,8 +106,8 @@ route.get("/", async (req, res) => {
           tags = tags.join("");
           for (let tag in req.body.tagovi) {
             if (Number.isInteger(parseInt(req.body.tagovi[tag])) && !tags.includes(req.body.tagovi[tag])) {
-                  console.log(req.body.tagovi[tag]);
-                  oprema.addTag(Tag.findByPk(req.body.tagovi[tag]));
+                  newTag = await Tag.findByPk(parseInt(req.body.tagovi[tag]));
+                  await oprema.addTag(newTag);
             }
           }
           oprema.save();
@@ -162,6 +164,11 @@ route.post("/nova-oprema", (req, res) => {
  route.delete("/:id", async (req, res) => {
     try{
           const oprema = await Oprema.findByPk(req.params.id);
+          await OpremaTag.destroy({
+            where: {
+                  OpremaId: oprema.id
+            }
+          });
           oprema.destroy();
           return res.json( oprema.id );
     }catch(err){

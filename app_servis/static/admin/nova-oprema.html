@@ -28,6 +28,21 @@
       <li class="nav-item">
         <a class="nav-link" href="narudzbine.html">Narudžbine</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="tagovi.html">Tagovi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="kategorije.html">Kategorije</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="statusi.html">Statusi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="korisnici.html">Korisnici</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="logout">Log out</a>
+      </li>
     </ul>
   </div>
 </nav>
@@ -48,8 +63,7 @@
     <div class="col-6 mb-3 mt-3">
       <label for="kategorija">Kategorija:</label>
       <select class="form-select" name="kategorija" id="kategorija">
-        <option value="1">Slušalice</option>
-        <option value="2">IEM</option>
+
       </select>
     </div>  
     <div class="col-6 mb-3 mt-3">
@@ -65,6 +79,25 @@
 </main>
 
 <script>
+window.addEventListener("load", function(){
+  fetch("http://localhost:9000/kategorija/", {
+            method:"GET",
+            headers: {'Authorization': `Bearer ${token}`}
+        })
+        .then(response => {
+          response.json().then(function(data) {
+            console.log(data);
+            for (let i = 0; i < data.length; i++){
+              dataRow = data[i];
+              let option = document.createElement("option");
+              option.value = dataRow.id;
+              option.innerHTML = dataRow.naziv;
+              document.getElementById("kategorija").appendChild(option);
+            }
+          })
+        })
+        .catch(err => console.log(err));	
+})
 document.getElementById("forma").addEventListener("submit", function(event){
         event.preventDefault();
         var validno = validacija();
@@ -75,6 +108,8 @@ document.getElementById("forma").addEventListener("submit", function(event){
         novaOprema.opis = document.getElementById("opis").value;
         novaOprema.kategorija_id = document.getElementById("kategorija").value;
         novaOprema.cena = document.getElementById("cena").value;
+
+        
     
         fetch("http://localhost:9000/oprema/", {
             method:"POST",

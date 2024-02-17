@@ -25,6 +25,18 @@
         <a class="nav-link" href="narudzbine.html">Narudžbine</a>
       </li>
       <li class="nav-item">
+        <a class="nav-link" href="tagovi.html">Tagovi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="kategorije.html">Kategorije</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="statusi.html">Statusi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="korisnici.html">Korisnici</a>
+      </li>
+      <li class="nav-item">
         <a class="nav-link" id="logout">Log out</a>
       </li>
     </ul>
@@ -43,7 +55,7 @@
     window.addEventListener('load', () => {
       document.getElementById('logout').addEventListener('click', (evt) => {
         document.cookie = `token=;SameSite=Lax`;
-        window.location.replace("http://127.0.0.1:8000/admin/login.html");
+        window.location.replace("http://localhost:8000/admin/login.html");
       })}
     );
 </script>

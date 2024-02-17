@@ -1,13 +1,30 @@
 const express = require("express");
-const { sequelize, Oprema, OpremaTag} = require("../models");
+const { sequelize, Oprema, OpremaTag, Tag} = require("../models");
 const route = express.Router();
+const Joi = require('joi');
+const jwt = require('jsonwebtoken');
+
+function authToken(req, res, next) {
+	const authHeader = req.headers['authorization'];
+	const token = authHeader && authHeader.split(' ')[1];
+	if (token == null) return res.status(401).json({ msg: "Error: null token" });
+	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
+	   if (err) return res.status(403).json({ msg: err });
+	   req.user = user;
+	   next();
+	});
+  } 
 
 route.use(express.json());
 route.use(express.urlencoded({extended:true}));
+route.use(authToken);
+Oprema.belongsToMany(Tag, { through: 'OpremaTags', sourceKey: 'id', targetKey: 'id', onDelete: 'cascade'});
+Tag.belongsToMany(Oprema, { through: 'OpremaTags', sourceKey: 'id', targetKey: 'id', onDelete: 'cascade' });
 
 route.get("/", async (req, res) => {
     try{
-         return res.json("svi tagovi");
+     const tags = await Tag.findAll();
+        return res.json(tags);
     }catch(err){
          console.log(err);
          res.status(500).json({ error: "Greska", data: err });
@@ -16,7 +33,8 @@ route.get("/", async (req, res) => {
 
  route.get("/:id", async (req, res) => {
     try{
-         return res.json("tag čiji je id=" + req.params.id);
+     const tag = await Tag.findByPk(req.params.id);
+        return res.json(tag);   
     }catch(err){
          console.log(err);
          res.status(500).json({ error: "Greska", data: err });
@@ -25,8 +43,18 @@ route.get("/", async (req, res) => {
  
  
  route.post("/", async (req, res) => {
-    try{
-         return res.json("unos novog taga čiji su podaci u req.body");
+     try{
+          const shema = Joi.object().keys({
+               naziv: Joi.string().trim().min(1).max(25).required(),
+          });
+          const {error, succ} = shema.validate(req.body);
+          if(error){
+                    res.send("Greska: " + error.details[0].message);
+                    return;
+          }
+          const tag = await Tag.create(req.body);
+          tag.save();
+          return res.json(tag);
     }catch(err){
          console.log(err);
          res.status(500).json({ error: "Greska", data: err });
@@ -36,7 +64,10 @@ route.get("/", async (req, res) => {
  
  route.put("/:id", async (req, res) => {
     try{
-         return res.json("izmena podataka tagova čiji je id="+req.params.id+" a podaci su u req.body");
+          const tag = await Tag.findByPk(req.params.id);
+          tag.naziv = req.body.naziv;
+          tag.save();
+          return res.json(tag);
     }catch(err){
          console.log(err);
          res.status(500).json({ error: "Greska", data: err });
@@ -46,7 +77,14 @@ route.get("/", async (req, res) => {
  
  route.delete("/:id", async (req, res) => {
     try{
-         return res.json(req.params.id); 
+          const tag = await Tag.findByPk(req.params.id);
+          await OpremaTag.destroy({
+               where: {
+                    TagId: tag.id
+               }
+          });
+          tag.destroy();
+          return res.json( tag.id );
     }catch(err){
          console.log(err);
          res.status(500).json({ error: "Greska", data: err });

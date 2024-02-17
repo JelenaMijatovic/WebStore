@@ -9,8 +9,21 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      status: {
-        type: Sequelize.STRING
+      status_id: {
+        allowNull: false,
+        references: {
+          model: 'statuses',
+          key: 'id',
+        },
+        type: Sequelize.INTEGER
+      },
+      user_id: {
+        allowNull: false,
+        references: {
+          model: 'users',
+          key: 'id',
+        },
+        type: Sequelize.INTEGER
       },
       vreme_narucivanja: {
         type: Sequelize.DATE,

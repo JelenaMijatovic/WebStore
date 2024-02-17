@@ -28,6 +28,21 @@
       <li class="nav-item">
         <a class="nav-link active" href="narudzbine.html">Narudžbine</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="tagovi.html">Tagovi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="kategorije.html">Kategorije</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="statusi.html">Statusi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="korisnici.html">Korisnici</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="logout">Log out</a>
+      </li>
     </ul>
   </div>
 </nav>
@@ -48,13 +63,8 @@
 
       <dt class="col-sm-3">Status</dt>
       <dd class="col-sm-9">      
-        <select class="form-select" name="status" id="status" onchange="document.getElementById('forma').submit()">
-          <option value="1">Novo</option>
-          <option value="2">Prihvaćeno</option>
-          <option value="3">Odbijeno</option>
-          <option value="4">U pripremi</option>
-          <option value="5">U dostavi</option>
-          <option value="5">Završeno</option>
+        <select class="form-select" name="status" id="status" onchange="changeStatus()">
+
         </select>
       </dd>
 
@@ -67,7 +77,10 @@
 
         </ul>
       </dd>
-      </dl>    
+      </dl> 
+      <div class="mb-5 mt-3">
+        <a href="narudzbine.html" class="btn btn-link">Nazad</a>
+      </div>   
   </form> 
 </main>
 
@@ -76,17 +89,41 @@
 <script>
   var id = null;
 
-  window.addEventListener("load", function(){
+  function changeStatus() {
+      event.preventDefault();
+
+      var narudzbina = {};
+      narudzbina.id = id;
+      narudzbina.status_id = document.getElementById("status").value;
+      console.log(narudzbina);
+
+      fetch("http://localhost:9000/narudzbina/" +id, {
+          method:"PUT",
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify(narudzbina)
+      })
+      .then(succ=>succ.json())
+      .then(data=>{
+      window.location.href=`/admin/narudzbine.html`;
+      })
+      .catch(err => console.log(err));	
+
+      return true;
+    }
+
+  window.addEventListener("load", async function(){
 
       var url = new URL( window.location.href );
       id = url.searchParams.get("id"); 
+
+      await getStatus();
 
       fetch("http://localhost:9000/narudzbina/" + id, {headers:{ 'Authorization': `Bearer ${token}`}}).then( resp=>resp.json() )
     .then( data=>{
         document.getElementById("vreme_narucivanja").innerHTML = data.vreme_narucivanja; 
         document.getElementById("narucilac").innerHTML = data.ime_prezime; 
-        document.getElementById("status").value = data.status; 
         document.getElementById("adresa").innerHTML = data.adresa; 
+        document.getElementById("status").value = data.status_id; 
         console.log(data);
         let cena = 0;
         for(let i=0; i<data.oprema.length; i++){
@@ -98,6 +135,26 @@
         document.getElementById("cena").innerHTML = cena;
     })
     .catch(err=>console.log(err));
+
+    async function getStatus() {
+    fetch("http://localhost:9000/status/", {
+        method:"GET",
+        headers: {'Authorization': `Bearer ${token}`}
+    })
+    .then(response => {
+      response.json().then(function(data) {
+        console.log(data);
+        for (let i = 0; i < data.length; i++){
+          dataRow = data[i];
+          let option = document.createElement("option");
+          option.value = dataRow.id;
+          option.innerHTML = dataRow.naziv;
+          document.getElementById("status").appendChild(option);
+        }
+      })
+    })
+    .catch(err => console.log(err));	
+}
   });
 </script>
 

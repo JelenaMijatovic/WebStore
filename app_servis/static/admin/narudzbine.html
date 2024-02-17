@@ -28,6 +28,21 @@
       <li class="nav-item">
         <a class="nav-link active" href="narudzbine.html">Narudžbine</a>
       </li>
+      <li class="nav-item">
+        <a class="nav-link" href="tagovi.html">Tagovi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="kategorije.html">Kategorije</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="statusi.html">Statusi</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="korisnici.html">Korisnici</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" id="logout">Log out</a>
+      </li>
     </ul>
   </div>
 </nav>
@@ -71,7 +86,7 @@
           let td3 = document.createElement("td");
           let td4 = document.createElement("td");
           td1.innerHTML = dataRow.vreme_narucivanja;
-          td2.innerHTML = dataRow.status;
+          td2.innerHTML = dataRow.status.naziv;
           td3.innerHTML = dataRow.adresa;
 
           let btnI = document.createElement("a");

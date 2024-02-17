@@ -32,16 +32,13 @@
         <a class="nav-link" href="tagovi.html">Tagovi</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link active" href="kategorije.html">Kategorije</a>
+        <a class="nav-link" href="kategorije.html">Kategorije</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="statusi.html">Statusi</a>
+        <a class="nav-link active" href="statusi.html">Statusi</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="korisnici.html">Korisnici</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" id="logout">Log out</a>
       </li>
     </ul>
   </div>
@@ -49,7 +46,7 @@
 </div>
 
 <main class="container">
-  <h1>Nova kategorija</h1>
+  <h1>Novi status</h1>
   <form method="post" id="forma">
     <div class="mb-3 mt-3">
       <label for="naziv">Naziv:</label>
@@ -57,7 +54,7 @@
     </div> 
     <div class="mb-5 mt-3">
       <button type="submit" class="btn btn-primary">Unesi</button>
-      <a href="kategorije.html" class="btn btn-link">Nazad</a>
+      <a href="statusi.html" class="btn btn-link">Nazad</a>
     </div>
   </form> 
 </main>
@@ -68,17 +65,17 @@
         var validno = validacija();
         if(!validno){ return; }
     
-        var novaKategorija = {};
-        novaKategorija.naziv = document.getElementById("naziv").value; 
+        var noviStatus = {};
+        noviStatus.naziv = document.getElementById("naziv").value; 
     
-        fetch("http://localhost:9000/kategorija/", {
+        fetch("http://localhost:9000/status/", {
             method:"POST",
                     headers: { 'Content-Type': 'application/json',  'Authorization': `Bearer ${token}`},
-            body: JSON.stringify(novaKategorija)
+            body: JSON.stringify(noviStatus)
         })
         .then(succ=>succ.json())
         .then(data=>{
-        window.location.href=`kategorija.html?id=${data.id}`;
+        window.location.href=`status.html?id=${data.id}`;
         })
         .catch(err => console.log(err));	
     });

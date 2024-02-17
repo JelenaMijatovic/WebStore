@@ -1,9 +1,13 @@
 var id = null;
 
-window.addEventListener("load", function(){
+window.addEventListener("load", async function(){
 
     var url = new URL( window.location.href );
     id = url.searchParams.get("id"); 
+
+    await getCategory();
+
+    await getTags();
 
     fetch("http://localhost:9000/oprema/" + id, {headers:{ 'Authorization': `Bearer ${token}`}}).then( resp=>resp.json() )
     .then( data=>{
@@ -13,6 +17,8 @@ window.addEventListener("load", function(){
         document.getElementById("cena").value = data.cena; 
         console.log(data);
 
+        spisak = document.getElementById("spisak-tagova").value;
+        console.log(spisak);
         for(let i=0; i<data.tagovi.length; i++){
             dodajTag(data.tagovi[i].id);
         }
@@ -77,6 +83,46 @@ window.addEventListener("load", function(){
     });
 
 });
+
+async function getCategory() {
+    fetch("http://localhost:9000/kategorija/", {
+        method:"GET",
+        headers: {'Authorization': `Bearer ${token}`}
+    })
+    .then(response => {
+      response.json().then(function(data) {
+        console.log(data);
+        for (let i = 0; i < data.length; i++){
+          dataRow = data[i];
+          let option = document.createElement("option");
+          option.value = dataRow.id;
+          option.innerHTML = dataRow.naziv;
+          document.getElementById("kategorija").appendChild(option);
+        }
+      })
+    })
+    .catch(err => console.log(err));	
+}
+
+async function getTags() {
+    fetch("http://localhost:9000/tag/", {
+        method:"GET",
+        headers: {'Authorization': `Bearer ${token}`}
+    })
+    .then(response => {
+      response.json().then(function(data) {
+        console.log(data);
+        for (let i = 0; i < data.length; i++){
+          dataRow = data[i];
+          let option = document.createElement("option");
+          option.value = dataRow.id;
+          option.innerHTML = dataRow.naziv;
+          document.getElementById("spisak-tagova").appendChild(option);
+        }
+      })
+    })
+    .catch(err => console.log(err));	
+}
 
 function dodajTag(id) {
 
