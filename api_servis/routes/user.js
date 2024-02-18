@@ -74,6 +74,16 @@ route.get("/", async (req, res) => {
  
  route.put("/:id", async (req, res) => {
     try{
+      const shema = Joi.object().keys({
+            username: Joi.string().trim().min(5).max(25).required(),
+            admin: Joi.bool().required(),
+            email: Joi.string().trim().min(5).max(25).required()
+      });
+      const {error, succ} = shema.validate(req.body);
+      if(error){
+            res.send("Greska: " + error.details[0].message);
+            return;
+      }
           const user = await User.findByPk();
           user.username = req.body.username;
           user.password = bcrypt.hashSync(req.body.password, 10);

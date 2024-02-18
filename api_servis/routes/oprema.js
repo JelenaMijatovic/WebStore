@@ -61,8 +61,8 @@ route.get("/", async (req, res) => {
     try{
       const shema = Joi.object().keys({
             naziv: Joi.string().trim().min(5).max(25).required(),
-            opis: Joi.string().trim().min(1).required(),
-            kategorija_id: Joi.string().trim().min(1).required(),
+            opis: Joi.string().trim().min(0).required(),
+            kategorija_id: Joi.string().min(1).required(),
             cena: Joi.number().greater(0).required()
       });
       const {error, succ} = shema.validate(req.body);
@@ -82,6 +82,19 @@ route.get("/", async (req, res) => {
  
  route.put("/:id", async (req, res) => {
     try{
+      const shema = Joi.object().keys({
+            naziv: Joi.string().trim().min(5).max(25).required(),
+            opis: Joi.string().trim().min(0).required(),
+            kategorija_id: Joi.string().min(1).required(),
+            cena: Joi.number().greater(0).required(),
+            tagovi: Joi.string()
+      });
+      const {error, succ} = shema.validate(req.body);
+      if(error){
+            console.log(error);
+            res.send("Greska: " + error.details[0].message);
+            return;
+      }
           const oprema = await Oprema.findByPk(req.params.id, ({
             include:{
                   model: Tag,
@@ -137,30 +150,7 @@ route.get("/", async (req, res) => {
             res.status(500).json({ error: "Greska", data: err });
 	}
 });
- 
-route.use("/nova-oprema", BP.urlencoded({extended: false}));
 
-route.post("/nova-oprema", (req, res) => {
-    const shema = Joi.object().keys({
-        naziv: Joi.string().trim().min(5).max(25).required(),
-        opis: Joi.string().trim().min(1).required(),
-        kategorija_id: Joi.string().trim().min(1).required(),
-        cena: Joi.number().greater(0).required()
-    });
-    const {error, succ} = shema.validate(req.body);
-    if(error){
-        res.send("Greska: " + error.details[0].message);
-	    return;
-    }
-    req.body.opis.replace(/\r?\n|\r/g, '<br>');
-    fs.appendFile("oprema.txt", 
-        JSON.stringify(req.body) + "\n", 
-        function(err, succ) {
-            res.send("Poruka je poslana, očekujte odgovor uskoro");
-        }
-    );
-})
- 
  route.delete("/:id", async (req, res) => {
     try{
           const oprema = await Oprema.findByPk(req.params.id);

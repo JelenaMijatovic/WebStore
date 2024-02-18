@@ -62,6 +62,14 @@ route.get("/", async (req, res) => {
  
  route.put("/:id", async (req, res) => {
     try{
+     const shema = Joi.object().keys({
+          naziv: Joi.string().trim().min(1).max(25).required(),
+     });
+     const {error, succ} = shema.validate(req.body);
+     if(error){
+               res.send("Greska: " + error.details[0].message);
+               return;
+     }
           const kategorija = await Kategorija.findByPk(req.params.id);
           kategorija.naziv = req.body.naziv;
           kategorija.save();

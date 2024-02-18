@@ -64,6 +64,14 @@ route.get("/", async (req, res) => {
  
  route.put("/:id", async (req, res) => {
     try{
+     const shema = Joi.object().keys({
+          naziv: Joi.string().trim().min(1).max(25).required(),
+     });
+     const {error, succ} = shema.validate(req.body);
+     if(error){
+               res.send("Greska: " + error.details[0].message);
+               return;
+     }
           const tag = await Tag.findByPk(req.params.id);
           tag.naziv = req.body.naziv;
           tag.save();

@@ -1,6 +1,7 @@
 const express = require("express");
 const { sequelize, Oprema, Narudzbina, Status, User} = require("../models");
 const route = express.Router();
+const Joi = require('joi');
 const jwt = require('jsonwebtoken');
 
 function authToken(req, res, next) {
@@ -57,6 +58,20 @@ route.get("/", async (req, res) => {
  
  route.post("/", async (req, res) => {
     try{
+     const shema = Joi.object().keys({
+          vreme_narucivanja: Joi.date().required(),
+          zakazano_vreme: Joi.date().required(),
+          status_id: Joi.string().min(1).required(),
+          adresa: Joi.string().trim().min(5).max(50).required(),
+          telefon: Joi.string().trim().min(8).required(),
+          user_id: Joi.string().min(1).required()
+    });
+    const {error, succ} = shema.validate(req.body);
+    if(error){
+     console.log(error);
+          res.send("Greska: " + error.details[0].message);
+          return;
+    }
           const novi = await Narudzbina.create(req.body);
           novi.save();
           return res.json(novi);
@@ -69,6 +84,16 @@ route.get("/", async (req, res) => {
  
  route.put("/:id", async (req, res) => {
     try{
+     const shema = Joi.object().keys({
+          id: Joi.string().min(1).required(),
+          status_id: Joi.string().min(1).required()
+    });
+    const {error, succ} = shema.validate(req.body);
+    if(error){
+     console.log(error);
+          res.send("Greska: " + error.details[0].message);
+          return;
+    }
           const narudzbina = await Narudzbina.findByPk(req.params.id);
           narudzbina.status_id = req.body.status_id;
           console.log(req);
