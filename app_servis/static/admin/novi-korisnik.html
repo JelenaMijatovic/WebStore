@@ -62,7 +62,7 @@
       </div>  
     <div class="row">
     <div class="col-6 mb-3 mt-3">
-      <input type="checkbox" id="admin" name="admin" value="Admin">
+      <input type="checkbox" id="admin" name="admin" value="true">
       <label for="admin">Admin</label><br>
     </div>  
     </div>
@@ -83,8 +83,13 @@ document.getElementById("forma").addEventListener("submit", function(event){
         var noviUser = {};
         noviUser.username = document.getElementById("username").value; 
         noviUser.password = document.getElementById("password").value;
-        noviUser.admin = document.getElementById("admin").value;
+        if (document.getElementById('admin').checked) {
+          noviUser.admin = true;
+        } else {
+          noviUser.admin = false;
+        }
         noviUser.email = document.getElementById("email").value;
+        console.log(noviUser);
 
         fetch("http://localhost:9000/user", {
             method:"POST",

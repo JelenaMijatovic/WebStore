@@ -1,5 +1,5 @@
 const express = require("express");
-const { sequelize, Oprema, Narudzbina, Status, StavkaNarudzbine} = require("../models");
+const { sequelize, Oprema, Narudzbina, Status, User} = require("../models");
 const route = express.Router();
 const jwt = require('jsonwebtoken');
 
@@ -37,12 +37,16 @@ route.get("/", async (req, res) => {
  route.get("/:id", async (req, res) => {
     try{
      const narudzbina = await Narudzbina.findByPk(req.params.id, ({
-          include:{ 
+          include:[{ 
                 model: Oprema,
                 as: 'oprema',
                 required: false,
                 through: {attributes: []}
-        }
+        }, {
+          model: User,
+          as: 'user',
+          required: true,
+        }]
      })); return res.json(narudzbina); 
     }catch(err){
          console.log(err);

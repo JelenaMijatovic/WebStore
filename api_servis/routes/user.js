@@ -38,8 +38,7 @@ route.get("/", async (req, res) => {
             include:{
                   model: Narudzbina,
                   as: 'narudzbine',
-                  required: false,
-                  through: {attributes: []}
+                  required: false
           }
       }));
           return res.json(user);     

@@ -121,7 +121,7 @@
       fetch("http://localhost:9000/narudzbina/" + id, {headers:{ 'Authorization': `Bearer ${token}`}}).then( resp=>resp.json() )
     .then( data=>{
         document.getElementById("vreme_narucivanja").innerHTML = data.vreme_narucivanja; 
-        document.getElementById("narucilac").innerHTML = data.ime_prezime; 
+        document.getElementById("narucilac").innerHTML = data.user.username; 
         document.getElementById("adresa").innerHTML = data.adresa; 
         document.getElementById("status").value = data.status_id; 
         console.log(data);
