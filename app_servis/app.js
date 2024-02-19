@@ -1,6 +1,7 @@
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const jwt = require('jsonwebtoken');
 const cors = require("cors");
 
 const app = express();
@@ -25,9 +26,9 @@ function getCookies(req) {
 function authToken(req, res, next) {
     const cookies = getCookies(req);
     const token = cookies['token'];
-    if (token == null) return res.redirect(301, '/login');
+    if (token == null) return res.redirect(301, '/admin/login');
     jwt.verify(token, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
-        if (err) return res.redirect(301, '/login');
+        if (err) return res.redirect(301, '/admin/login');
         req.user = user;
         next();
     });
@@ -38,10 +39,15 @@ const corsOptions = {
   };
 app.use(cors(corsOptions));
 
+app.use(express.static(path.join(__dirname, 'static', 'dist')));
 app.use(express.static(path.join(__dirname, 'static')));
 
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'static/admin', 'index.html'));
+});
+
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'static/admin', 'login.html'));
 });
 
 app.get('/admin/register', (req, res) => {
