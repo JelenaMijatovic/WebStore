@@ -41,11 +41,12 @@ app.post('/login', (req, res) => {
         if (bcrypt.compareSync(req.body.password, usr.password)) {
             const obj = {
                 userId: usr.id,
-                user: usr.username
+                user: usr.username,
+                email: usr.email
             };
             const token = jwt.sign(obj, 
 						process.env.ACCESS_TOKEN_SECRET);
-            res.json({ token: token });
+            res.json({ token: token, user:obj });
         } else {
             res.status(400).json({ msg: "Invalid credentials"});
         }

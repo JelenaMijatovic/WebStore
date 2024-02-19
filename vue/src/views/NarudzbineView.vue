@@ -23,7 +23,7 @@
             return{
                 perPage:10,
                 currentPage: 1,
-                fields: [{key: "vreme_narucivanja", sortable:true, label:"Vreme Naručivanja"}, "adresa", "status", "ime_prezime"]
+                fields: [{key: "vreme_narucivanja", sortable:true, label:"Vreme Naručivanja"}, "adresa", {key: "status.naziv", sortable:true, label:"status"}, {key: "user.username", sortable:true, label:"korisnik"}]
             }
         },
         computed:{
@@ -34,6 +34,7 @@
         },
         mounted(){
             this.fetchNarudzbine();
+            console.log(this.narudzbine);
         }
     }
 </script>

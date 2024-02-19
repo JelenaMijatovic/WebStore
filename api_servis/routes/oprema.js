@@ -42,12 +42,16 @@ route.get("/", async (req, res) => {
  route.get("/:id", async (req, res) => {
     try{
           const oprema = await Oprema.findByPk(req.params.id, ({
-            include:{
+            include:[{
                   model: Tag,
                   as: 'tagovi',
                   required: false,
                   through: {attributes: []}
-          }
+          }, {
+            model: Kategorija,
+            as: 'kategorija',
+            required: true
+            }]
       }));
           return res.json(oprema);     
     }catch(err){

@@ -4,11 +4,11 @@
         <HeaderC :title="oprema.naziv"/>
         <div class="info">
           <h3>Kategorija</h3>
-          {{ oprema.kategorija_id }}
+          {{ oprema.kategorija.naziv }}
           <h3>Cena</h3>
           {{ oprema.cena }}
           <h3>Tagovi</h3>
-          <div class="tagovi" v-for="tag in oprema.tags" :key="tag.id" :zaposlenje="tag">
+          <div class="tagovi" v-for="tag in oprema.tagovi" :key="tag.id" :tag="tag">
             <b>{{tag.naziv}}</b>
           </div>
         </div>
@@ -35,6 +35,7 @@
       this.getOprema(this.$route.params.id)
         .then( res => {
           this.oprema = res;
+          console.log(this.oprema);
         });
     },
     methods: {
@@ -54,10 +55,10 @@
   .info{
   overflow:auto;
   }
-  .zaposlenje{
+  .tag{
   margin-bottom:20px;
   }
-  .zaposlenje .period{
+  .tag .period{
   font-size: 80%;
   }
   </style>

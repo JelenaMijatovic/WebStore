@@ -85,8 +85,7 @@ route.get("/", async (req, res) => {
             return;
       }
           const user = await User.findByPk();
-          user.username = req.body.username;
-          user.password = bcrypt.hashSync(req.body.password, 10);
+          user.username = req.body.username
           user.admin = req.body.admin;
           user.email = req.body.email;
           user.save();

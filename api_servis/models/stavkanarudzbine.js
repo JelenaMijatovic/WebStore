@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   StavkaNarudzbine.init({
     komada: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: true
     },
     NarudzbinaId: {
       type: DataTypes.INTEGER,

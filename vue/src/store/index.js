@@ -8,7 +8,8 @@ export default new Vuex.Store({
     narudzbine: [],
     oprema: [],
     svaOpremaIDs: [],
-    token: []
+    token: [],
+    user: []
   },
   getters: {
   },
@@ -29,10 +30,14 @@ export default new Vuex.Store({
     removeToken(state) {
       state.token = '';
       localStorage.token = '';
+    },
+    setUser(state, user) {
+      state.user = user;
     }
   },
   actions: {
     async fetchNarudzbine({commit, state}) {
+      console.log(state.token);
       fetch(`http://localhost:9000/narudzbina/`, {headers:{'Authorization': `Bearer ${state.token}`}})
       .then( res=>res.json() )
       .then( data => commit('addNarudzbine', data) );
@@ -75,7 +80,8 @@ export default new Vuex.Store({
           if (data.msg) {
             alert(data.msg);
           } else {
-            commit('setToken', data.token)
+            commit('setToken', data.token);
+            commit('setUser', data.user)
           }
         });
       }

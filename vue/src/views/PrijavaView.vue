@@ -17,22 +17,22 @@
             <br>
             <b-row>
                 <b-col sm="4">
-                <label>Komada</label>
+                <label>Adresa</label>
                 </b-col>
                 <b-col sm="6">
-                <b-form-input id="textarea" :state="validniKomadi" v-model="forma.komadi" rows="4"></b-form-input>
+                <b-form-input id="adresa" :state="validnaAdresa" v-model="forma.adresa" rows="4"></b-form-input>
                 </b-col>
             </b-row>
         </b-container>
         <br>
-        <b-button @click="posalji()" variant="primary">Naruci</b-button>
+        <b-button @click="posalji()" variant="primary">Naruči</b-button>
         </div>
     </div>
   </template>
   
   <script>
   import HeaderC from '@/components/HeaderC.vue'
-  import { mapState } from 'vuex';
+  import { mapState, mapActions } from 'vuex';
   
   export default {
     name: 'PrijavaView',
@@ -41,12 +41,16 @@
     },
     data() {
       return {
-        headerTitle: "Naruci opremu",
+        headerTitle: "Naruči opremu",
         statusnaPoruka: null,
         statusnaPorukaTip: null,
         forma: {
             oprema: null,
-            promena: null
+            user_id: null,
+            status_id: "1",
+            vreme_narucivanja:new Date(),
+            zakazano_vreme: new Date(),
+            telefon:"000000000"
         }
       }
     },
@@ -56,24 +60,23 @@
             else if(this.forma.oprema.length > 0) return true
             else return false;
         },
-        validniKomadi(){
-            if(this.forma.komadi == null) return null;
-            else if(this.forma.komadi.length == this.forma.oprema.length) return true
+        validnaAdresa(){
+            if(this.forma.adresa == null) return null;
+            else if(this.forma.adresa.length > 0) return true
             else return false;
         },
-        computed: {
       ...mapState([
-        'token'
+        'token', 'user'
       ])
-  },
     },
     methods:{
-        posalji(token){
-            if(this.validnaOprema && this.validniKomadi) {
+        posalji(){
+            if(this.validnaOprema && this.validnaAdresa) {
+                this.forma.user_id = this.user.userId.toString();
                 fetch("http://localhost:9000/narudzbina/", {
                 headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${this.token}`
                 },
                 method: "POST",
                 body: JSON.stringify(this.forma)
@@ -94,7 +97,8 @@
                 return;
             }
             }
-        }
+        },
+      ...mapActions(['getOprema'])
   }
   </script>
   

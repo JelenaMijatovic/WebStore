@@ -1,5 +1,5 @@
 const express = require("express");
-const { sequelize, Oprema, Narudzbina, Status, User} = require("../models");
+const { sequelize, Oprema, Narudzbina, Status, User, StavkaNarudzbine} = require("../models");
 const route = express.Router();
 const Joi = require('joi');
 const jwt = require('jsonwebtoken');
@@ -18,15 +18,21 @@ function authToken(req, res, next) {
 route.use(express.json());
 route.use(express.urlencoded({extended:true}));
 route.use(authToken);
+Oprema.belongsToMany(Narudzbina, { through: 'StavkaNarudzbine', sourceKey: 'id', targetKey: 'id', onDelete: 'cascade'});
+Narudzbina.belongsToMany(Oprema, { through: 'StavkaNarudzbine', sourceKey: 'id', targetKey: 'id', onDelete: 'cascade' });
 
 route.get("/", async (req, res) => {
     try{
      const narudzbine = await Narudzbina.findAll(({
-          include:{ 
+          include:[{ 
                model: Status,
                as: 'status',
                required: true
-          }
+          }, {
+               model: User,
+               as: 'user',
+               required: true,
+             }]
   }));
      return res.json(narudzbine);
     }catch(err){
@@ -64,7 +70,8 @@ route.get("/", async (req, res) => {
           status_id: Joi.string().min(1).required(),
           adresa: Joi.string().trim().min(5).max(50).required(),
           telefon: Joi.string().trim().min(8).required(),
-          user_id: Joi.string().min(1).required()
+          user_id: Joi.string().min(1).required(),
+          oprema: Joi.string().min(1).required()
     });
     const {error, succ} = shema.validate(req.body);
     if(error){
@@ -73,6 +80,10 @@ route.get("/", async (req, res) => {
           return;
     }
           const novi = await Narudzbina.create(req.body);
+          for (let oprema1 in req.body.oprema) {
+               newOprema = await Oprema.findByPk(parseInt(req.body.oprema[oprema1]));
+               await novi.addOprema(newOprema);
+             }
           novi.save();
           return res.json(novi);
     }catch(err){
@@ -109,6 +120,11 @@ route.get("/", async (req, res) => {
  route.delete("/:id", async (req, res) => {
     try{
           const narudzbina = await Narudzbina.findByPk(req.params.id);
+          await StavkaNarudzbine.destroy({
+               where: {
+                    NarudzbinaId: narudzbina.id
+               }
+          });
           narudzbina.destroy();
           return res.json( narudzbina.id );
     }catch(err){

@@ -2,14 +2,14 @@
   <div id="app">
     <img src="@/assets/logo.png">
     <nav>
-      <router-link to="/">Home</router-link> |
+      <router-link to="/">Oprema</router-link> |
       <router-link to="/narudzbine">Narudžbine</router-link> |
-      <router-link to="/prijavi-promenu">Naruci</router-link> |
-      <router-link v-if="!token" to="/register">Register</router-link> |
+      <router-link to="/prijavi-promenu">Naruči</router-link> |
+      <router-link v-if="!token" to="/register">Register | </router-link>
       <router-link v-if="!token" to="/login">Log In</router-link>
       <div v-else>
-      <router-link to="/profile">Profil</router-link> |
-      <b-nav-item  @click="logout()">Log Out</b-nav-item>
+      <router-link to="/profile">Profil</router-link>
+      <b-nav-item  @click="logout()"> | Log Out</b-nav-item>
       </div>
     </nav>
     <router-view/>
